@@ -1,0 +1,84 @@
+async function getSecondData(){
+	let retData = {threatLevel: 'undefined', threatLevelNum: 0};
+
+	try{
+		const _data = await getDirtyData();
+		let threatLevelNum = 0;
+		switch (_data.demoInfo.threatLevel) {
+			case 'low': threatLevelNum = 1; break;
+			case 'medium': threatLevelNum = 2; break;
+			case 'high': threatLevelNum = 3; break;
+			default: break;
+		}
+		retData = {threatLevel: _data.demoInfo.threatLevel, threatLevelNum};
+	}catch{}
+
+	return retData;
+
+	async function getDirtyData(){
+		try{
+			const _data = await preGet();
+			return _data;
+		}catch{}
+
+		const proxyList = ProxyManager();
+
+		for (let i = 0; i < proxyList.length; i++) {
+			const _proxy = proxyList[i];
+			try{
+				const _data = await preGet(_proxy);
+				return _data;
+			}catch{}
+		}
+	
+		throw new Error('try later');
+
+		async function preGet(proxy = null){
+			const res = await new Promise(async res => {
+				let _sended = false;
+				const params = {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					}
+				};
+				if(proxy){
+					try{
+						if(proxy.startsWith('http:')){
+							const proxyAgent = new HttpsProxyAgent(proxy);
+							params.agent = proxyAgent;
+						}else{
+							const proxyAgent = new SocksProxyAgent(proxy);
+							params.agent = proxyAgent;
+						}
+					}catch{
+						res(null);
+						return;
+					}
+				}
+				setTimeout(() => {
+					if(_sended) return;
+					_sended = true;
+					res(null);
+				}, proxy ? 3000 : 1500);
+				nfetch('https://db-ip.com/demo/home.php?s='+ip, params)
+				.then((resp) => {
+					if(_sended) return;
+					_sended = true;
+					res(resp);
+				}).catch(() => {
+					if(_sended) return;
+					_sended = true;
+					res(null);
+				});
+			});
+			if(!res) throw new Error('Connection timed out');
+			const _data = await res.json();
+			if(!_data.demoInfo.threatLevel){
+				throw new Error('unknow "threatLevel"');
+			}
+			return _data;
+		}
+	}
+	
+}

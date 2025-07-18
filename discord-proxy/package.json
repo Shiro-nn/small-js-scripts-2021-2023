@@ -1,0 +1,8 @@
+{
+  "name": "add-proxy",
+  "version": "0.0.0",
+  "description": "just add proxy for discord",
+  "main": "app.js",
+  "author": "",
+  "license": "MIT"
+}
