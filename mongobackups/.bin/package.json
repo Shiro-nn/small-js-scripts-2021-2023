@@ -1,0 +1,16 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "backups mongodb database",
+  "main": "init.js",
+  "bin": "init.js",
+  "scripts": {
+    "test": "node .",
+    "build": "pkg package.json --options unhandled-rejections=none -t node18-win-x64"
+  },
+  "author": "fydne",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.4.0"
+  }
+}

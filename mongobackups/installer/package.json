@@ -1,0 +1,15 @@
+{
+  "name": "mongobackups-installer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "run.js",
+  "scripts": {
+    "exec": "node run.js",
+    "restart": "node restart.js"
+  },
+  "author": "fydne",
+  "license": "MIT",
+  "dependencies": {
+    "node-windows": "^1.0.0-beta.8"
+  }
+}
